@@ -3,7 +3,7 @@ import hashlib
 import customtkinter as ctk
 from PIL import Image
 from tkinter import messagebox
-import transaksi
+import mpok.transaksi as transaksi
 
 conn = sqlite3.connect("db_p3l.db")
 cursor = conn.cursor()
