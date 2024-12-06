@@ -4,7 +4,6 @@ import customtkinter as ctk
 from PIL import Image
 from tkinter import messagebox
 import mpok.dashboard as adminlogin
-import user.userui as userlogin
 
 conn = sqlite3.connect("db_p3l.db")
 cursor = conn.cursor()
