@@ -3,7 +3,8 @@ import hashlib
 import customtkinter as ctk
 from PIL import Image
 from tkinter import messagebox
-import mpok.transaksi as transaksi
+import mpok.dashboard as adminlogin
+import user.userui as userlogin
 
 conn = sqlite3.connect("db_p3l.db")
 cursor = conn.cursor()
@@ -33,13 +34,24 @@ def login():
         messagebox.showinfo("Login Successful", f"Welcome, {username}! Your role is {role}.")
         # Fitur disini
         app.destroy
-        transaksi.show_dashboard(app)
+        
+        if role == "admin":
+            adminlogin.main(app)
+        elif role == "user":
+            userlogin.show_dashboard(app)
     else:
         messagebox.showerror("Error", "Invalid username or password.")
 
+def center_window(window, width, height):
+    screen_width = window.winfo_screenwidth()
+    screen_height = window.winfo_screenheight()
+    x = (screen_width - width) // 2
+    y = (screen_height - height) // 4
+    window.geometry(f"{width}x{height}+{x}+{y}")
+
 # App Windows GUI
 app = ctk.CTk()
-app.geometry("850x650")
+center_window(app, 850, 650)
 app.resizable(0, 0)
 app.title("IndieKost Warehouse")
 ctk.set_appearance_mode("Light")  

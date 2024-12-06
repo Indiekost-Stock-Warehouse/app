@@ -1,6 +1,8 @@
 import customtkinter as ctk
 from tkinter import ttk
-import mpok.transaksi as transaksi
+import mpok.dashboard as adminlogin
+import mpok.transaksi as admintransaksi
+import mpok.user as adminuser
 
 # Fungsi untuk membuat sidebar
 def setup_sidebar(root):
@@ -11,16 +13,16 @@ def setup_sidebar(root):
     menu_label = ctk.CTkLabel(sidebar_frame, text="MENU", font=("Arial", 16, "bold"))
     menu_label.grid(row=0, column=0, padx=20, pady=(20, 10), sticky="w")
 
-    dashboard_button = ctk.CTkButton(sidebar_frame, text="Dashboard", command=lambda: transaksi.show_dashboard(root))
+    dashboard_button = ctk.CTkButton(sidebar_frame, text="Dashboard", command=lambda: adminlogin.main(root))
     dashboard_button.grid(row=1, column=0, padx=20, pady=10, sticky="w")
 
-    stock_button = ctk.CTkButton(sidebar_frame, text="Stok Barang")
+    stock_button = ctk.CTkButton(sidebar_frame, text="Stok Barang", fg_color="green")
     stock_button.grid(row=2, column=0, padx=20, pady=10, sticky="w")
 
-    transaksi_button = ctk.CTkButton(sidebar_frame, text="Transaksi")
+    transaksi_button = ctk.CTkButton(sidebar_frame, text="Transaksi", command = lambda: admintransaksi.main(root))
     transaksi_button.grid(row=3, column=0, padx=20, pady=10, sticky="w")
 
-    logout_button = ctk.CTkButton(sidebar_frame, text="Keluar", fg_color="red", hover_color="darkred")
+    logout_button = ctk.CTkButton(sidebar_frame, text="Users", command=lambda: adminuser.setup_app(root), fg_color="purple")
     logout_button.grid(row=4, column=0, padx=20, pady=(50, 10), sticky="w")
 
     return sidebar_frame
@@ -107,18 +109,18 @@ def delete_action(tree):
         tree.delete(selected_item)
 
 # Fungsi utama untuk setup GUI
-def main(app):
+def main_ui(app):
     for widget in app.winfo_children():
         widget.destroy()
 
-    app.title("Halaman Stok Barang")
+    app.title("IndieKost Stock List")
     app.grid_columnconfigure(1, weight=1)
     app.grid_rowconfigure(0, weight=1)
-
-    ctk.set_appearance_mode("Light")  # Pilihan mode: "System", "Light", "Dark"
-    ctk.set_default_color_theme("blue")
 
     setup_sidebar(app)
     setup_main_content(app)
 
     app.mainloop()
+
+if __name__ == "__main__":
+    main_ui(ctk.CTk())
