@@ -41,7 +41,7 @@ def login():
 app = ctk.CTk()
 app.geometry("850x650")
 app.resizable(0, 0)
-app.title("IndieKost Login")
+app.title("IndieKost Warehouse")
 ctk.set_appearance_mode("Light")  
 
 # Images

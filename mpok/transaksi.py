@@ -2,6 +2,7 @@ import customtkinter as ctk
 from CTkTable import CTkTable
 from PIL import Image
 import mpok.user as userui
+from mpok.stok import main as fungsi
 
 #Images
 logo_img_data = Image.open("./Asset/Image/logo.png")
@@ -46,7 +47,7 @@ def show_dashboard(app):
 
     ctk.CTkLabel(master=sidebar_frame, text="", image=logo_img).pack(pady=(38, 0), anchor="center")
 
-    ctk.CTkButton(master=sidebar_frame, image=analytics_img, text="Dashboard", fg_color="transparent", font=("Arial Bold", 14), hover_color="#207244", anchor="w").pack(anchor="center", ipady=5, pady=(60, 0))
+    ctk.CTkButton(master=sidebar_frame, image=analytics_img, text="Dashboard", command=lambda: fungsi(app), fg_color="transparent", font=("Arial Bold", 14), hover_color="#207244", anchor="w").pack(anchor="center", ipady=5, pady=(60, 0))
 
     ctk.CTkButton(master=sidebar_frame, image=package_img, text="Orders", fg_color="#fff", font=("Arial Bold", 14), text_color="#2A8C55", hover_color="#eee", anchor="w").pack(anchor="center", ipady=5, pady=(16, 0))
 
