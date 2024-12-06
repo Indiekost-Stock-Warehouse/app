@@ -4,6 +4,7 @@ import customtkinter as ctk
 from PIL import Image
 from tkinter import messagebox
 import mpok.dashboard as adminlogin
+import user.dashboard as userlogin
 
 conn = sqlite3.connect("db_p3l.db")
 cursor = conn.cursor()
@@ -16,7 +17,7 @@ def register_default_admin(username, password):
     cursor.execute("INSERT INTO login (username, password, role) VALUES (?, ?, ?)", (username, hashed_password, "admin"))
     conn.commit()
 
-def login():
+def login():    
     username = username_entry.get()
     password = password_entry.get()
     hashed_password = hash_password(password)
@@ -37,7 +38,7 @@ def login():
         if role == "admin":
             adminlogin.main(app)
         elif role == "user":
-            userlogin.show_dashboard(app)
+            userlogin.main(app)
     else:
         messagebox.showerror("Error", "Invalid username or password.")
 

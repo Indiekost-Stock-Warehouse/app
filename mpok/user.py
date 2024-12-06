@@ -138,7 +138,7 @@ def setup_sidebar(root):
     menu_items = [("Dashboard", lambda: adminlogin.main(root), None), 
                   ("Stok Barang", lambda: adminstok.main_ui(root), None),
                   ("Transaksi", lambda: admintransaksi.main(root), None),
-                  ("Users", lambda: print("User diklik"), "green")
+                  ("Users", None, "green")
                   ]
     
     for i, (item, action, btn_color) in enumerate(menu_items, start=1):
