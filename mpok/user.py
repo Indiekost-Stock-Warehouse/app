@@ -3,6 +3,7 @@ import hashlib
 import customtkinter as ctk
 from tkinter import ttk , messagebox
 import mpok.dashboard as adminlogin
+import mpok.order as adminorder
 import mpok.stok as adminstok
 import mpok.transaksi as admintransaksi
 
@@ -135,7 +136,8 @@ def setup_sidebar(root):
     menu_label = ctk.CTkLabel(sidebar_frame, text="MENU", font=("Arial", 16, "bold"))
     menu_label.grid(row=0, column=0, padx=20, pady=(20, 10), sticky="w")
 
-    menu_items = [("Dashboard", lambda: adminlogin.main(root), None), 
+    menu_items = [("Dashboard", lambda: adminlogin.main(root), None),
+                  ("Pesanan", lambda: adminorder.lihat_order(root), None),
                   ("Stok Barang", lambda: adminstok.main_ui(root), None),
                   ("Transaksi", lambda: admintransaksi.main(root), None),
                   ("Users", None, "green")

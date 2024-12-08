@@ -2,6 +2,7 @@ import customtkinter as ctk
 from tkinter import ttk, filedialog
 import csv
 import mpok.dashboard as adminlogin
+import mpok.order as adminorder
 import mpok.stok as adminstok
 import mpok.user as adminuser
 
@@ -21,6 +22,9 @@ def main(app):
 
     # create the sidebar buttons
     dashboard_button = ctk.CTkButton(sidebar_frame, text="Dashboard", command=lambda: adminlogin.main(app))
+    dashboard_button.pack(pady=5, padx=10)
+
+    dashboard_button = ctk.CTkButton(sidebar_frame, text="Pesanan", command=lambda: adminorder.lihat_order(app))
     dashboard_button.pack(pady=5, padx=10)
 
     instock_button = ctk.CTkButton(sidebar_frame, text="Stok Barang", command=lambda: adminstok.main_ui(app))

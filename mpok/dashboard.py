@@ -1,4 +1,5 @@
 import customtkinter as ctk
+import mpok.order as adminorder
 import mpok.stok as adminstok
 import mpok.transaksi as admintransaksi
 import mpok.user as adminuser
@@ -13,9 +14,10 @@ def setup_sidebar(root):
 
     buttons = [
         ("Dashboard", 1, {"fg_color": "green"}),
-        ("Stok Barang", 2, {"command": lambda: adminstok.main_ui(root)} ),
-        ("Transaksi", 3, {"command": lambda:admintransaksi.main(root)} ),
-        ("Users", 4, {"command": lambda:adminuser.setup_app(root), "fg_color": "purple"}),
+        ("Pesanan", 2, {"command": lambda: adminorder.lihat_order(root)} ),
+        ("Stok Barang", 3, {"command": lambda: adminstok.main_ui(root)} ),
+        ("Transaksi", 4, {"command": lambda:admintransaksi.main(root)} ),
+        ("Users", 5, {"command": lambda:adminuser.setup_app(root), "fg_color": "purple"}),
     ]
 
     for text, row, *opts in buttons:
