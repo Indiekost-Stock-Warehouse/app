@@ -1,6 +1,4 @@
 import customtkinter as ctk
-import user.stok as adminstok
-import user.transaksi as admintransaksi
 
 def setup_sidebar(root):
     sidebar_frame = ctk.CTkFrame(root, width=200, corner_radius=0)
@@ -11,10 +9,11 @@ def setup_sidebar(root):
     menu_label.grid(row=0, column=0, padx=20, pady=(20, 10), sticky="w")
 
     buttons = [
-        ("Dashboard", 1, {"fg_color": "green"}),
-        ("Stok Barang", 2, {"command": lambda: adminstok.main_ui(root)} ),
-        ("Transaksi", 3, {"command": lambda: admintransaksi.main(root)} ),
-        ("Keluar", 4, {"command": lambda:root.destroy(), "fg_color": "red"}),
+        ("Dashboard", 1),
+        ("Stok Barang", 2),
+        ("Transaksi", 3),
+        ("User", 4),
+        ("Keluar", 5, {"fg_color": "red", "hover_color": "darkred"})
     ]
 
     for text, row, *opts in buttons:
@@ -69,21 +68,22 @@ def setup_right_panel(root):
         label = ctk.CTkLabel(right_panel, text=item, font=("Arial", 14))
         label.pack(pady=10)
 
-def main(app):
-    for widget in app.winfo_children():
-        widget.destroy()
+def main():
+    ctk.set_appearance_mode("Light")  # Pilihan: "System", "Dark", "Light"
+    ctk.set_default_color_theme("blue")  # Pilihan: "blue", "green", "dark-blue"
 
-    app.title("IndiKost User Dashboard")
+    root = ctk.CTk()
+    root.title("Dashboard Admin")
+    root.geometry("1200x700")
 
-    setup_sidebar(app)
-    setup_main_content(app)
-    setup_right_panel(app)
+    setup_sidebar(root)
+    setup_main_content(root)
+    setup_right_panel(root)
 
-    app.grid_columnconfigure(1, weight=1)
-    app.grid_rowconfigure(0, weight=1)
+    root.grid_columnconfigure(1, weight=1)
+    root.grid_rowconfigure(0, weight=1)
 
-    app.mainloop()
+    root.mainloop()
 
 if __name__ == "__main__":
-    app = ctk.CTk()
-    main(app)
+    main()
