@@ -1,8 +1,52 @@
 import customtkinter as ctk
+import pandas as pd
+import matplotlib.pyplot as plt
 import mpok.order as adminorder
 import mpok.stok as adminstok
 import mpok.transaksi as admintransaksi
 import mpok.user as adminuser
+from datetime import datetime
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+
+# Fungsi untuk membuat chart
+def display_sales_chart(chart_frame):
+    # Hapus widget sebelumnya dalam chart_frame
+    for widget in chart_frame.winfo_children():
+        widget.destroy()
+
+    today = datetime.now().strftime("%Y-%m-%d")
+    file_path = f"./report/sell/{today}.xlsx"
+
+    try:
+        # Membaca file Excel
+        data = pd.read_excel(file_path)
+        
+        if data.empty:
+            raise ValueError("Data penjualan kosong")
+
+        # Menghitung total jumlah penjualan per barang
+        sales_summary = data.groupby("Barang Pesanan")["Jumlah"].sum().sort_values(ascending=False).head(10)
+
+        # Membuat chart menggunakan matplotlib
+        fig, ax = plt.subplots(figsize=(8, 4))
+        sales_summary.plot(kind="bar", ax=ax, color="skyblue")
+        ax.set_title("Barang Terlaris Hari Ini", fontsize=14)
+        ax.set_xlabel("Barang Pesanan")
+        ax.set_ylabel("Jumlah Terjual")
+        ax.tick_params(axis='x', rotation=45)
+        
+        # Menampilkan chart di Tkinter
+        canvas = FigureCanvasTkAgg(fig, master=chart_frame)
+        canvas.draw()
+        canvas.get_tk_widget().pack(fill="both", expand=True)
+    
+    except FileNotFoundError:
+        label = ctk.CTkLabel(chart_frame, text="Belum ada penjualan hari ini", font=("Arial", 14))
+        label.pack(expand=True)
+    except ValueError:
+        label = ctk.CTkLabel(chart_frame, text="Data penjualan kosong", font=("Arial", 14))
+        label.pack(expand=True)
+
 
 def setup_sidebar(root):
     sidebar_frame = ctk.CTkFrame(root, width=200, corner_radius=0)
@@ -53,34 +97,16 @@ def setup_main_content(root):
     chart_frame = ctk.CTkFrame(main_frame, height=300, corner_radius=10)
     chart_frame.grid(row=2, column=0, columnspan=2, padx=20, pady=20, sticky="nsew")
 
-    chart_label = ctk.CTkLabel(chart_frame, text="Chart Placeholder", font=("Arial", 16))
-    chart_label.pack(expand=True)
-
-def setup_right_panel(root):
-    right_panel = ctk.CTkFrame(root, width=250, corner_radius=10)
-    right_panel.grid(row=0, column=2, sticky="ns", padx=(0, 20), pady=20)
-
-    right_panel_label = ctk.CTkLabel(right_panel, text="Aktivitas", font=("Arial", 18, "bold"))
-    right_panel_label.pack(pady=20)
-
-    aktivitas = [
-        "Submit sebuah transaksi.\nBaru saja",
-        "Submit stok barang.\n2 jam yang lalu"
-    ]
-
-    for item in aktivitas:
-        label = ctk.CTkLabel(right_panel, text=item, font=("Arial", 14))
-        label.pack(pady=10)
+    display_sales_chart(chart_frame)
 
 def main(app):
     for widget in app.winfo_children():
         widget.destroy()
 
-    app.title("IndiKost Admin Dashboard")
+    app.title("IndieKost Admin Dashboard")
 
     setup_sidebar(app)
     setup_main_content(app)
-    setup_right_panel(app)
 
     app.grid_columnconfigure(1, weight=1)
     app.grid_rowconfigure(0, weight=1)

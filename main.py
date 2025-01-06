@@ -1,3 +1,4 @@
+import os
 import sqlite3
 import hashlib
 import customtkinter as ctk
@@ -8,6 +9,14 @@ import user.dashboard as userlogin
 
 conn = sqlite3.connect("db_p3l.db")
 cursor = conn.cursor()
+
+def on_close():
+    try:
+        conn.close()  # Tutup koneksi database
+    except:
+        pass
+    app.destroy()  # Tutup aplikasi sepenuhnya
+    os._exit(0)
 
 def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
@@ -33,8 +42,6 @@ def login():
         role = user[0]
         messagebox.showinfo("Login Successful", f"Welcome, {username}! Your role is {role}.")
         # Fitur disini
-        app.destroy
-        
         if role == "admin":
             adminlogin.main(app)
         elif role == "user":
@@ -51,6 +58,7 @@ def center_window(window, width, height):
 
 # App Windows GUI
 app = ctk.CTk()
+app.protocol("WM_DELETE_WINDOW", on_close)
 center_window(app, 850, 650)
 app.resizable(0, 0)
 app.title("IndieKost Warehouse")
