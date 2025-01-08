@@ -5,7 +5,7 @@ import customtkinter as ctk
 from PIL import Image
 from tkinter import messagebox
 import mpok.dashboard as adminlogin
-import user.dashboard as userlogin
+import user.order as userlogin
 
 conn = sqlite3.connect("db_p3l.db")
 cursor = conn.cursor()
@@ -45,7 +45,7 @@ def login():
         if role == "admin":
             adminlogin.main(app)
         elif role == "user":
-            userlogin.main(app)
+            userlogin.lihat_order(app)
     else:
         messagebox.showerror("Error", "Invalid username or password.")
 

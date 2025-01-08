@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from tkinter import ttk
+from tkinter import ttk, messagebox
 import os
 import datetime
 import pandas as pd
@@ -83,9 +83,9 @@ def main(app):
             df = pd.read_excel(file_path)
             for _, row in df.iterrows():
                 table.insert("", "end", values=(row["No"], row["Jam Pemesanan"], row["Barang Pesanan"], row["Jumlah"]))
-            print(f"Data loaded from {file_path}")
+            #print(f"Data loaded from {file_path}") #debug print
         else:
-            print(f"File not found: {file_path}")
+            messagebox.showinfo("Info", "Belum ada transaksi hari ini")
 
     # Create the bottom frame for options
     bottom_frame = ctk.CTkFrame(right_frame, corner_radius=0)

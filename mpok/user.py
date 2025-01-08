@@ -7,7 +7,6 @@ import mpok.order as adminorder
 import mpok.stok as adminstok
 import mpok.transaksi as admintransaksi
 
-
 # Database connection
 conn = sqlite3.connect("db_p3l.db")
 cursor = conn.cursor()

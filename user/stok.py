@@ -1,8 +1,9 @@
 import customtkinter as ctk
 from tkinter import ttk , messagebox
 import sqlite3
-import user.dashboard as adminlogin
-import user.transaksi as admintransaksi
+import os
+import user.order as userorder
+import user.transaksi as usertransaksi
 
 connection = sqlite3.connect("db_p3l.db")
 cursor = connection.cursor()
@@ -216,26 +217,14 @@ def setup_sidebar(root):
     menu_label = ctk.CTkLabel(sidebar_frame, text="MENU", font=("Arial", 16, "bold"))
     menu_label.grid(row=0, column=0, padx=20, pady=(20, 10), sticky="w")
 
-    dashboard_button = ctk.CTkButton(sidebar_frame, text="Dashboard", command=lambda: adminlogin.main(root))
-    dashboard_button.grid(row=1, column=0, padx=20, pady=10, sticky="w")
-
-    def pesanan_diklik():
-        messagebox.showinfo("Informasi", "Anda bukan owner")
-    print("Pesanan diklik")
-    dashboard_button = ctk.CTkButton(sidebar_frame, text="Pesanan", command=pesanan_diklik)
+    dashboard_button = ctk.CTkButton(sidebar_frame, text="Pesanan", command=lambda: userorder.lihat_order(root))
     dashboard_button.grid(row=2, column=0, padx=20, pady=10, sticky="w")
 
     stock_button = ctk.CTkButton(sidebar_frame, text="Stok Barang", fg_color="green")
     stock_button.grid(row=3, column=0, padx=20, pady=10, sticky="w")
 
-    transaksi_button = ctk.CTkButton(sidebar_frame, text="Transaksi", command = lambda: admintransaksi.main(root))
+    transaksi_button = ctk.CTkButton(sidebar_frame, text="Transaksi", command = lambda: usertransaksi.main(root))
     transaksi_button.grid(row=4, column=0, padx=20, pady=10, sticky="w")
-
-    def users_diklik():
-        messagebox.showinfo("Informasi", "Anda bukan owner")
-    print("Pesanan diklik")
-    logout_button = ctk.CTkButton(sidebar_frame, text="Pesanan", command=users_diklik)
-    logout_button.grid(row=5, column=0, padx=20, pady=(50, 10), sticky="w")
 
     return sidebar_frame
 
@@ -291,55 +280,7 @@ def setup_main_content(root):
     for item in data:
         tree.insert("", "end", values=item)
 
-    # Area Tombol Aksi
-    action_frame = ctk.CTkFrame(main_frame, corner_radius=10, fg_color="lightgray")
-    action_frame.grid(row=2, column=0, sticky="ew", padx=20, pady=(0, 20))
-
-    edit_button = ctk.CTkButton(action_frame, text="Edit", state="disabled", command=lambda: edit_action(tree))
-    edit_button.grid(row=0, column=0, padx=10, pady=10)
-
-    delete_button = ctk.CTkButton(action_frame, text="Hapus", state="disabled", command=lambda: delete_action(tree))
-    delete_button.grid(row=0, column=1, padx=10, pady=10)
-
-    # Fungsi untuk mengaktifkan tombol saat baris dipilih
-    def on_row_selected(event): #jgn hapus argumen event nya
-        selected_item = tree.selection()
-        if selected_item:
-            edit_button.configure(state="normal")
-            delete_button.configure(state="normal")
-        else:
-            edit_button.configure(state="disabled")
-            delete_button.configure(state="disabled")
-
-    tree.bind("<<TreeviewSelect>>", on_row_selected)
-
     return main_frame
-
-# Fungsi untuk aksi edit
-def edit_action(tree):
-    selected_item = tree.selection()
-    if selected_item:
-        item_data = tree.item(selected_item, "values")
-        item_id = item_data[0]  # ID dari kolom pertama
-        current_name = item_data[1]
-        current_stok = item_data[2]
-        current_satuan = item_data[3]
-        edit_popup(item_id, current_name, current_stok, current_satuan)
-
-# Fungsi untuk aksi hapus
-def delete_action(tree):
-    selected_item = tree.selection()
-    if selected_item:
-        item_data = tree.item(selected_item, "values")
-        item_id = item_data[0]  # ID adalah kolom pertama
-        confirm = messagebox.askyesno("Konfirmasi Hapus", "Apakah Anda yakin ingin menghapus data ini?")
-        if confirm :
-            try:
-                delete_from_db(item_id)
-                tree.delete(selected_item)
-                messagebox.showinfo("Success", f"Item dengan ID {item_id} berhasil dihapus.")
-            except sqlite3.Error as e:
-                messagebox.showerror("Failed", "Database Error", f"Error deleting data: {e}")
 
 # Fungsi utama untuk setup GUI
 def main_ui(app):

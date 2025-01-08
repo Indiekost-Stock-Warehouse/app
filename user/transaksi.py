@@ -1,12 +1,13 @@
 import customtkinter as ctk
-from tkinter import ttk, filedialog
-import csv
-import user.dashboard as adminlogin
-import user.stok as adminstok
-from tkinter import messagebox
+from tkinter import ttk, messagebox
+import os
+import datetime
+import pandas as pd
+import user.order as userorder
+import user.stok as userstok
 
 def main(app):
-    global orders_data
+    global orders_data, table
     for widget in app.winfo_children():
         widget.destroy()
 
@@ -20,27 +21,15 @@ def main(app):
     menu_label = ctk.CTkLabel(sidebar_frame, text="MENU", font=("Arial", 16, "bold"))
     menu_label.pack(pady=5, padx=10)
 
-    # create the sidebar buttons
-    dashboard_button = ctk.CTkButton(sidebar_frame, text="Dashboard", command=lambda: adminlogin.main(app))
-    dashboard_button.pack(pady=5, padx=10)
+    # create the sidebar buttons    
+    order_button = ctk.CTkButton(sidebar_frame, text="Pesanan", command=lambda: userorder.lihat_order(app))
+    order_button.pack(pady=5, padx=10)
 
-    def pesanan_diklik():
-        messagebox.showinfo("Informasi", "Anda bukan owner")
-    print("Pesanan diklik")
-    dashboard_button = ctk.CTkButton(sidebar_frame, text="Pesanan", command=pesanan_diklik)
-    dashboard_button.pack(pady=5, padx=10)
-
-    instock_button = ctk.CTkButton(sidebar_frame, text="Stok Barang", command=lambda: adminstok.main_ui(app))
+    instock_button = ctk.CTkButton(sidebar_frame, text="Stok Barang", command=lambda: userstok.main_ui(app))
     instock_button.pack(pady=5, padx=10)
 
-    orders_button = ctk.CTkButton(sidebar_frame, text="Transaksi", fg_color="green")
-    orders_button.pack(pady=5, padx=10)
-
-    def users_diklik():
-        messagebox.showinfo("Informasi", "Anda bukan owner")
-    print("Pesanan diklik")
-    dashboard_button = ctk.CTkButton(sidebar_frame, text="Pesanan", command=users_diklik)
-    dashboard_button.pack(pady=5, padx=10)
+    transaksi_button = ctk.CTkButton(sidebar_frame, text="Transaksi", fg_color="green")
+    transaksi_button.pack(pady=5, padx=10)
 
     # create the right content frame
     right_frame = ctk.CTkFrame(app, corner_radius=0)
@@ -51,7 +40,7 @@ def main(app):
     top_frame.pack(fill="x", pady=10)
 
     # create the title
-    title_label = ctk.CTkLabel(top_frame, text="Inventory Table", font=("Arial", 18))
+    title_label = ctk.CTkLabel(top_frame, text="Gudang Indiekost", font=("Arial", 18))
     title_label.pack(pady=10)
 
     # create the table frame
@@ -59,84 +48,54 @@ def main(app):
     table_frame.pack(fill="both", expand=True, padx=10, pady=10)
 
     # create a table using Treeview
-    columns = ("No", "Tgl Pemesanan", "Pesanan", "Jumlah", "Harga", "Total")
+    columns = ("No", "Jam Pemesanan", "Barang Pesanan", "Jumlah")
 
-    table = ttk.Treeview(table_frame, columns=columns, show="headings", height=15)
+    table = ttk.Treeview(table_frame, columns=columns, show="headings")
     table.pack(fill="both", expand=True)
 
     # define column headings
     table.heading("No", text="No")
-    table.heading("Tgl Pemesanan", text="Tgl Pemesanan")
-    table.heading("Pesanan", text="Pesanan")
+    table.heading("Jam Pemesanan", text="Jam Pemesanan")
+    table.heading("Barang Pesanan", text="Barang Pesanan")
     table.heading("Jumlah", text="Jumlah")
-    table.heading("Harga", text="Harga")
-    table.heading("Total", text="Total")
 
     # define column widths
     table.column("No", width=50, anchor="center")
-    table.column("Tgl Pemesanan", width=150, anchor="center")
-    table.column("Pesanan", width=100, anchor="center")
+    table.column("Jam Pemesanan", width=150, anchor="center")
+    table.column("Barang Pesanan", width=200, anchor="center")
     table.column("Jumlah", width=100, anchor="center")
-    table.column("Harga", width=100, anchor="center")
-    table.column("Total", width=100, anchor="center")
 
-    # insert sample data
-    sample_data = [
-        (1, "1/1/2024", "Nasi Goreng", "10", 50, 500),
-        (2, "2/1/2024", "Mie Goreng", "5", 40, 200),
-        (3, "3/1/2024", "Soto Ayam", "8", 60, 480),
-        (4, "4/1/2024", "Bakso", "15", 30, 450),
-        (5, "5/1/2024", "Ayam Geprek", "12", 35, 420)
-    ]
+    # Function to load data from spreadsheet
+    def load_data(transaction_type):
+        table.delete(*table.get_children())  # Clear existing table data
+        today = datetime.datetime.now().strftime("%Y-%m-%d")
+        file_path = f"./report/{'sell' if transaction_type == 'Penjualan' else 'buy'}/{today}.xlsx"
 
-    for row in sample_data:
-        table.insert("", "end", values=row)
+        if os.path.exists(file_path):
+            df = pd.read_excel(file_path)
+            for _, row in df.iterrows():
+                table.insert("", "end", values=(row["No"], row["Jam Pemesanan"], row["Barang Pesanan"], row["Jumlah"]))
+            #print(f"Data loaded from {file_path}") #debug print
+        else:
+            messagebox.showinfo("Info", "Belum ada transaksi hari ini")
 
-    # Function to export table data to CSV
-    def export_to_csv():
-        file_path = filedialog.asksaveasfilename(defaultextension=".csv",
-                                                filetypes=[("CSV files", "*.csv"),
-                                                            ("All files", "*.*")])
-        if file_path:
-            with open(file_path, mode="w", newline="", encoding="utf-8") as file:
-                writer = csv.writer(file)
-                # write the column headings
-                writer.writerow(columns)
-                # write the data rows
-                for item in table.get_children():
-                    writer.writerow(table.item(item, "values"))
-            print(f"Data exported to {file_path}")
-
-    # Function to add new data
-    def add_row():
-        # Add a new row (for simplicity, this is hardcoded)
-        new_row = (len(table.get_children()) + 1, "6/1/2024", "Es Teh", "20", 10, 200)
-        table.insert("", "end", values=new_row)
-        print("New row added!")
-
-    # Create the bottom frame for buttons
+    # Create the bottom frame for options
     bottom_frame = ctk.CTkFrame(right_frame, corner_radius=0)
     bottom_frame.pack(fill="x", side="bottom", pady=10, padx=10)
 
-    # Create Export button
-    export_button = ctk.CTkButton(bottom_frame, text="Export", command=export_to_csv)
+    # Dropdown for transaction type
+    tipe_transaksi = ["Penjualan", "Pembelian"]
+    selected_transaction = ctk.StringVar(value="Penjualan")
+
+    def on_transaction_change(choice):
+        load_data(choice)
+
+    export_button = ctk.CTkOptionMenu(bottom_frame, variable=selected_transaction, values=tipe_transaksi, command=on_transaction_change)
     export_button.pack(side="right", padx=10)
 
-    # Create Plus button
-    plus_button = ctk.CTkButton(bottom_frame, text="+", width=40, height=40, font=("Arial", 18), command=add_row)
-    plus_button.pack(side="right")
+    # Load default data (Penjualan)
+    load_data("Penjualan")
 
-    orders_data = []
-
-    def load_data():
-        global orders_data
-        if not orders_data:
-            print("No data available!")
-        return
-
-    for item in orders_data:
-        print(f"Loading data: {item}") 
-        
     # run the application
     app.mainloop()
 
