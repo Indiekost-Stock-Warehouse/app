@@ -47,6 +47,28 @@ def display_sales_chart(chart_frame):
         label = ctk.CTkLabel(chart_frame, text="Data penjualan kosong", font=("Arial", 14))
         label.pack(expand=True)
 
+# Fungsi untuk mendapatkan statistik penjualan dan pembelian
+def get_stats():
+    today = datetime.now().strftime("%Y-%m-%d")
+    sell_path = f"./report/sell/{today}.xlsx"
+    buy_path = f"./report/buy/{today}.xlsx"
+
+    try:
+        # Membaca data penjualan
+        sell_data = pd.read_excel(sell_path)
+        total_sales = len(sell_data) if not sell_data.empty else 0  # Jumlah baris = jumlah transaksi
+    except FileNotFoundError:
+        total_sales = 0  # Jika file tidak ditemukan, set jumlah transaksi penjualan = 0
+
+    try:
+        # Membaca data pembelian
+        buy_data = pd.read_excel(buy_path)
+        total_purchases = len(buy_data) if not buy_data.empty else 0  # Jumlah baris = jumlah transaksi
+    except FileNotFoundError:
+        total_purchases = 0  # Jika file tidak ditemukan, set jumlah transaksi pembelian = 0
+
+    return total_sales, total_purchases
+
 
 def setup_sidebar(root):
     sidebar_frame = ctk.CTkFrame(root, width=200, corner_radius=0)
@@ -78,19 +100,24 @@ def setup_main_content(root):
     dashboard_title = ctk.CTkLabel(main_frame, text="Dashboard", font=("Arial", 20, "bold"))
     dashboard_title.grid(row=0, column=0, padx=20, pady=(10, 20), sticky="w")
 
+    # Ambil statistik penjualan dan pembelian
+    total_sales, total_purchases = get_stats()
+
     # Stat Cards
+    # Card untuk Penjualan
     stat_card_1 = ctk.CTkFrame(main_frame, width=200, height=100, corner_radius=10)
     stat_card_1.grid(row=1, column=0, padx=20, pady=10)
     stat_card_1.grid_propagate(False)
 
-    stat_label_1 = ctk.CTkLabel(stat_card_1, text="Total Transaksi\n2,315", font=("Arial", 14))
+    stat_label_1 = ctk.CTkLabel(stat_card_1, text=f"Total Penjualan\n{total_sales}", font=("Arial", 14))
     stat_label_1.pack(expand=True)
 
+    # Card untuk Pembelian
     stat_card_2 = ctk.CTkFrame(main_frame, width=200, height=100, corner_radius=10)
     stat_card_2.grid(row=1, column=1, padx=20, pady=10)
     stat_card_2.grid_propagate(False)
 
-    stat_label_2 = ctk.CTkLabel(stat_card_2, text="Total Stok\n7,265", font=("Arial", 14))
+    stat_label_2 = ctk.CTkLabel(stat_card_2, text=f"Total Pembelian\n{total_purchases}", font=("Arial", 14))
     stat_label_2.pack(expand=True)
 
     # Chart Placeholder

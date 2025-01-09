@@ -165,11 +165,8 @@ def setup_top_bar(main_frame):
     top_bar = ctk.CTkFrame(main_frame, corner_radius=0, height=50)
     top_bar.grid(row=0, column=0, sticky="ew", padx=20, pady=10)
 
-    search_entry = ctk.CTkEntry(top_bar, placeholder_text="Search")
-    search_entry.pack(side="left", padx=10, pady=10)
-
-    filter_button = ctk.CTkButton(top_bar, text="Filter", fg_color="red", width=70, hover_color="darkred")
-    filter_button.pack(side="left", padx=10, pady=10)
+    title_label = ctk.CTkLabel(top_bar, text="User Panel", font=("Arial", 18))
+    title_label.pack(pady=10)
 
 # Tabel data pengguna
 def setup_user_table(main_frame, db_file="db_p3l.db", table_name="login"):

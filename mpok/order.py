@@ -181,7 +181,7 @@ def lihat_order(app):
                     },
                 )
             else:
-                messagebox.showerror("Error", f"Gagal Menjual {item_name}.")
+                messagebox.showerror("Error", f"Gagal Menjual {item_name}, Silahkan pilih item yang tersedia.")
         else:
             messagebox.showerror("Error", "Jumlah pesanan harus berupa angka positif!")
 
