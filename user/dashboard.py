@@ -13,7 +13,7 @@ def setup_sidebar(root):
     buttons = [
         ("Dashboard", 1, {"fg_color": "green"}),
         ("Stok Barang", 2, {"command": lambda: adminstok.main_ui(root)} ),
-        ("Transaksi", 3, {"command": lambda: admintransaksi.main(root)} ),
+        ("Riwayat Transaksi", 3, {"command": lambda: admintransaksi.main(root)} ),
         ("Keluar", 4, {"command": lambda:root.destroy(), "fg_color": "red"}),
     ]
 
@@ -31,19 +31,20 @@ def setup_main_content(root):
     dashboard_title = ctk.CTkLabel(main_frame, text="Dashboard", font=("Arial", 20, "bold"))
     dashboard_title.grid(row=0, column=0, padx=20, pady=(10, 20), sticky="w")
 
-    # Stat Cards
-    stat_card_1 = ctk.CTkFrame(main_frame, width=200, height=100, corner_radius=10)
+    # Card untuk Total Transaksi
+    stat_card_1 = ctk.CTkFrame(main_frame, width=200, height=100, corner_radius=50, fg_color="transparent")  # Menghilangkan background abu-abu
     stat_card_1.grid(row=1, column=0, padx=20, pady=10)
     stat_card_1.grid_propagate(False)
 
-    stat_label_1 = ctk.CTkLabel(stat_card_1, text="Total Transaksi\n2,315", font=("Arial", 14))
+    stat_label_1 = ctk.CTkLabel(stat_card_1, text="Total Transaksi\n2,315", font=("Arial", 14), anchor="center")  # Memusatkan teks
     stat_label_1.pack(expand=True)
 
-    stat_card_2 = ctk.CTkFrame(main_frame, width=200, height=100, corner_radius=10)
+    # Card untuk Total Stok
+    stat_card_2 = ctk.CTkFrame(main_frame, width=200, height=100, corner_radius=50, fg_color="transparent")  # Menghilangkan background abu-abu
     stat_card_2.grid(row=1, column=1, padx=20, pady=10)
     stat_card_2.grid_propagate(False)
 
-    stat_label_2 = ctk.CTkLabel(stat_card_2, text="Total Stok\n7,265", font=("Arial", 14))
+    stat_label_2 = ctk.CTkLabel(stat_card_2, text="Total Stok\n7,265", font=("Arial", 14), anchor="center")  # Memusatkan teks
     stat_label_2.pack(expand=True)
 
     # Chart Placeholder

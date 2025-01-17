@@ -82,7 +82,7 @@ def setup_sidebar(root):
         ("Dashboard", 1, {"fg_color": "green"}),
         ("Pesanan", 2, {"command": lambda: adminorder.lihat_order(root)} ),
         ("Stok Barang", 3, {"command": lambda: adminstok.main_ui(root)} ),
-        ("Transaksi", 4, {"command": lambda:admintransaksi.main(root)} ),
+        ("Riwayat Transaksi", 4, {"command": lambda:admintransaksi.main(root)} ),
         ("Users", 5, {"command": lambda:adminuser.setup_app(root), "fg_color": "purple"}),
     ]
 
@@ -105,20 +105,21 @@ def setup_main_content(root):
 
     # Stat Cards
     # Card untuk Penjualan
-    stat_card_1 = ctk.CTkFrame(main_frame, width=200, height=100, corner_radius=10)
+    stat_card_1 = ctk.CTkFrame(main_frame, width=200, height=100, corner_radius=50, fg_color="transparent")  # Menghilangkan warna latar belakang abu-abu
     stat_card_1.grid(row=1, column=0, padx=20, pady=10)
     stat_card_1.grid_propagate(False)
 
-    stat_label_1 = ctk.CTkLabel(stat_card_1, text=f"Total Penjualan\n{total_sales}", font=("Arial", 14))
+    stat_label_1 = ctk.CTkLabel(stat_card_1, text=f"Total Penjualan\n{total_sales}", font=("Arial", 14), anchor="center")  # Teks dipusatkan
     stat_label_1.pack(expand=True)
 
     # Card untuk Pembelian
-    stat_card_2 = ctk.CTkFrame(main_frame, width=200, height=100, corner_radius=10)
+    stat_card_2 = ctk.CTkFrame(main_frame, width=200, height=100, corner_radius=50, fg_color="transparent")  # Menghilangkan warna latar belakang abu-abu
     stat_card_2.grid(row=1, column=1, padx=20, pady=10)
     stat_card_2.grid_propagate(False)
 
-    stat_label_2 = ctk.CTkLabel(stat_card_2, text=f"Total Pembelian\n{total_purchases}", font=("Arial", 14))
+    stat_label_2 = ctk.CTkLabel(stat_card_2, text=f"Total Pembelian\n{total_purchases}", font=("Arial", 14), anchor="center")  # Teks dipusatkan
     stat_label_2.pack(expand=True)
+
 
     # Chart Placeholder
     chart_frame = ctk.CTkFrame(main_frame, height=300, corner_radius=10)

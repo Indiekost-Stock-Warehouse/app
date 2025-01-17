@@ -227,7 +227,7 @@ def setup_sidebar(root):
     stock_button = ctk.CTkButton(sidebar_frame, text="Stok Barang", fg_color="green")
     stock_button.grid(row=3, column=0, padx=20, pady=10, sticky="w")
 
-    transaksi_button = ctk.CTkButton(sidebar_frame, text="Transaksi", command = lambda: admintransaksi.main(root))
+    transaksi_button = ctk.CTkButton(sidebar_frame, text="Riwayat Transaksi", command = lambda: admintransaksi.main(root))
     transaksi_button.grid(row=4, column=0, padx=20, pady=10, sticky="w")
 
     logout_button = ctk.CTkButton(sidebar_frame, text="Users", command=lambda: adminuser.setup_app(root), fg_color="purple")
@@ -245,6 +245,7 @@ def setup_floating_button(root):
         fg_color="red",
         font=("Arial", 24, "bold"),
         hover_color="darkred",
+        bg_color="transparent",  # Hilangkan background abu-abu
         command=lambda: tambah_popup(),
     )
     add_button.place(relx=0.87, rely=0.75, anchor="center")

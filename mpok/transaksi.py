@@ -33,7 +33,7 @@ def main(app):
     instock_button = ctk.CTkButton(sidebar_frame, text="Stok Barang", command=lambda: adminstok.main_ui(app))
     instock_button.pack(pady=5, padx=10)
 
-    transaksi_button = ctk.CTkButton(sidebar_frame, text="Transaksi", fg_color="green")
+    transaksi_button = ctk.CTkButton(sidebar_frame, text="Riwayat Transaksi", fg_color="green")
     transaksi_button.pack(pady=5, padx=10)
 
     users_button = ctk.CTkButton(sidebar_frame, text="Users", command=lambda:adminuser.setup_app(app), fg_color="purple")

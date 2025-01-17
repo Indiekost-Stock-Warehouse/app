@@ -83,7 +83,7 @@ def lihat_order(app):
 
     ctk.CTkButton(master=sidebar_frame, image=list_img, text="Stock", command=lambda: userstok.main_ui(app), fg_color="transparent", font=("Arial Bold", 14), hover_color="#207244", anchor="w").pack(anchor="center", ipady=5, pady=(16, 0))
 
-    ctk.CTkButton(master=sidebar_frame, image=returns_img, text="Transaksi", command=lambda: usertransaksi.main(app), fg_color="transparent", font=("Arial Bold", 14), hover_color="#207244", anchor="w").pack(anchor="center", ipady=5, pady=(16, 0))
+    ctk.CTkButton(master=sidebar_frame, image=returns_img, text="Riwayat Transaksi", command=lambda: usertransaksi.main(app), fg_color="transparent", font=("Arial Bold", 14), hover_color="#207244", anchor="w").pack(anchor="center", ipady=5, pady=(16, 0))
 
     main_view = ctk.CTkFrame(master=app, fg_color="#fff",  width=680, height=650, corner_radius=0)
     main_view.pack_propagate(0)
