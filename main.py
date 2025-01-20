@@ -31,7 +31,7 @@ def login():
     password = password_entry.get()
     hashed_password = hash_password(password)
     if not username or not password:
-        messagebox.showerror("Error", "Username and password cannot be empty!")
+        messagebox.showerror("Error", "Username dan password tidak boleh kosong")
         return
 
     # Verifikasi role
@@ -48,6 +48,9 @@ def login():
             userlogin.lihat_order(app)
     else:
         messagebox.showerror("Error", "Invalid username or password.")
+
+def on_enter(event):
+    login()
 
 def center_window(window, width, height):
     screen_width = window.winfo_screenwidth()
@@ -90,8 +93,11 @@ username_entry.pack(anchor="w", padx=(25, 0))
 ctk.CTkLabel(master=frame, text="  Password:", text_color="#601E88", anchor="w", justify="left", font=("Arial Bold", 14), image=password_icon, compound="left").pack(anchor="w", pady=(21, 0), padx=(25, 0))
 password_entry = ctk.CTkEntry(master=frame, width=225, fg_color="#EEEEEE", border_color="#601E88", border_width=1, text_color="#000000", show="*")
 password_entry.pack(anchor="w", padx=(25, 0))
+username_entry.bind("<Return>", on_enter)
+password_entry.bind("<Return>", on_enter)
 
 ctk.CTkButton(master=frame, text="Login", command=login, fg_color="#601E88", text_color="#ffffff").pack(anchor="w", pady=(30, 0), padx=(25, 0))
+
 app.mainloop()
 
 # Add Default Admin
