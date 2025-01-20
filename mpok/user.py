@@ -1,7 +1,7 @@
 import sqlite3
 import hashlib
 import customtkinter as ctk
-from tkinter import ttk , messagebox
+from tkinter import ttk, messagebox
 import mpok.dashboard as adminlogin
 import mpok.order as adminorder
 import mpok.stok as adminstok
@@ -22,87 +22,13 @@ def add_user(username, password, role):
     conn.commit()
     print(f"User '{username}' with role '{role}' added successfully!")  # Debug log
 
+# Center window function
 def center_window(window, width, height):
     screen_width = window.winfo_screenwidth()
     screen_height = window.winfo_screenheight()
     x = (screen_width - width) // 2
     y = (screen_height - height) // 4
     window.geometry(f"{width}x{height}+{x}+{y}")
-
-# Create popup
-def create_popup():
-    # Membuat jendela pop-up utama
-    popup = ctk.CTk()
-    center_window(popup, 600, 250)
-    popup.title("Tambah User")
-    popup.resizable(False, False)
-
-    # Bagian atas pop-up
-    top_frame = ctk.CTkFrame(popup, height=50, corner_radius=0)
-    top_frame.pack(side="top", fill="x")
-
-    title_label = ctk.CTkLabel(top_frame, text="Tambah User", font=("Arial", 16, "bold"))
-    title_label.pack(side="left", padx=20, pady=10)
-
-    close_button = ctk.CTkButton(
-        top_frame,
-        text="✖",
-        width=30,
-        height=30,
-        fg_color="red",
-        hover_color="darkred",
-        command=popup.destroy
-    )
-    close_button.pack(side="right", padx=10, pady=10)
-
-    # Konten pop-up
-    content_frame = ctk.CTkFrame(popup, corner_radius=10)
-    content_frame.pack(side="top", fill="both", expand=True, padx=20, pady=10)
-
-    # Username
-    user_label = ctk.CTkLabel(content_frame, text="Username:", anchor="w")
-    user_label.grid(row=0, column=0, padx=10, pady=10, sticky="w")
-    user_entry = ctk.CTkEntry(content_frame, placeholder_text="Username")
-    user_entry.grid(row=0, column=1, padx=10, pady=10, sticky="ew")
-
-    # Password
-    password_label = ctk.CTkLabel(content_frame, text="Password:", anchor="w")
-    password_label.grid(row=1, column=0, padx=10, pady=10, sticky="w")
-    password_entry = ctk.CTkEntry(content_frame, placeholder_text="Password", show="*")
-    password_entry.grid(row=1, column=1, padx=10, pady=10, sticky="ew")
-
-    # Role dropdown
-    options = ["admin", "user"]
-    role_label = ctk.CTkLabel(content_frame, text="Role:", anchor="w")
-    role_label.grid(row=2, column=0, padx=10, pady=10, sticky="w")
-    role_dropdown = ctk.CTkOptionMenu(content_frame, values=options)
-    role_dropdown.grid(row=2, column=1, padx=10, pady=10, sticky="ew")
-
-    # Mengatur kolom agar dapat di-resize
-    content_frame.grid_columnconfigure(1, weight=1)
-
-    # Tombol OK
-    ok_button = ctk.CTkButton(
-        popup,
-        text="OK",
-        fg_color="green",
-        hover_color="darkgreen",
-        corner_radius=10,
-        command=lambda: handle_add_user(popup, user_entry.get(), password_entry.get(), role_dropdown.get()),
-    )
-    ok_button.pack(side="bottom", pady=10)
-
-    # Menjalankan pop-up
-    popup.mainloop()
-
-# Handle add user
-def handle_add_user(popup, username, password, role):
-    if not username or not password:
-        print("Error: Username and password cannot be empty!")  # Debug log
-        return
-    add_user(username, password, role)
-    messagebox.showinfo("Success", f"User '{username}' with role '{role}' added successfully!")
-    popup.destroy()
 
 # Setup utama
 def setup_app(app):
@@ -119,8 +45,6 @@ def setup_app(app):
 
     # Tidak perlu menyebutkan path penuh untuk database
     setup_user_table(main_frame)
-
-    setup_floating_button(main_frame)
 
     app.grid_columnconfigure(1, weight=1)
     app.grid_rowconfigure(0, weight=1)
@@ -274,32 +198,64 @@ def setup_user_table(main_frame, db_file="db_p3l.db", table_name="login"):
         ctk.CTkButton(edit_window, text="Save Changes", command=save_changes).pack(pady=20)
         ctk.CTkButton(edit_window, text="Cancel", command=edit_window.destroy).pack()
 
+    def create_popup():
+        # Membuat jendela pop-up utama
+        popup = ctk.CTk()
+        center_window(popup, 600, 250)
+        popup.title("Tambah User")
+        popup.resizable(False, False)
+
+        # Bagian atas pop-up
+        top_frame = ctk.CTkFrame(popup, height=50, corner_radius=0)
+        top_frame.pack(side="top", fill="x")
+
+        title_label = ctk.CTkLabel(top_frame, text="Tambah User", font=("Arial", 16))
+        title_label.pack(pady=10)
+
+        # Form untuk menambah user
+        form_frame = ctk.CTkFrame(popup)
+        form_frame.pack(pady=20)
+
+        ctk.CTkLabel(form_frame, text="Username").grid(row=0, column=0, padx=10, pady=5, sticky="e")
+        username_entry = ctk.CTkEntry(form_frame)
+        username_entry.grid(row=0, column=1, padx=10, pady=5)
+
+        ctk.CTkLabel(form_frame, text="Password").grid(row=1, column=0, padx=10, pady=5, sticky="e")
+        password_entry = ctk.CTkEntry(form_frame, show="*")
+        password_entry.grid(row=1, column=1, padx=10, pady=5)
+
+        ctk.CTkLabel(form_frame, text="Role").grid(row=2, column=0, padx=10, pady=5, sticky="e")
+        role_entry = ctk.CTkOptionMenu(form_frame, values=["admin", "user"])  # Dropdown untuk role
+        role_entry.grid(row=2, column=1, padx=10, pady=5)
+
+        def submit_new_user():
+            username = username_entry.get().strip()
+            password = password_entry.get().strip()
+            role = role_entry.get().strip()  # Mengambil nilai dari dropdown
+            if username and password and role:
+                add_user(username, password, role)
+                load_data()  # Refresh data
+                popup.destroy()
+                messagebox.showinfo("Success", f"User '{username}' added successfully.")
+            else:
+                messagebox.showwarning("Input Error", "Tolong isi semua data")
+
+        # Tombol untuk submit data
+        ctk.CTkButton(popup, text="Add User", command=submit_new_user).pack(pady=20)
+
+        popup.mainloop()
+
+    # Load data pengguna
     load_data()
 
-    # Tombol untuk edit dan hapus
-    button_frame = ctk.CTkFrame(main_frame)
-    button_frame.grid(row=2, column=0, pady=10, sticky="ew")
+    # Tombol untuk tambah user
+    add_button = ctk.CTkButton(table_frame, text="Add User", command=create_popup)
+    add_button.pack(side="left", padx=10, pady=10)
 
-    edit_button = ctk.CTkButton(button_frame, text="Edit User", command=edit_user)
-    edit_button.pack(side="left", padx=10)
+    # Tombol untuk hapus user
+    delete_button = ctk.CTkButton(table_frame, text="Delete User", command=delete_user)
+    delete_button.pack(side="left", padx=10, pady=10)
 
-    delete_button = ctk.CTkButton(button_frame, text="Delete User", fg_color="red", command=delete_user)
-    delete_button.pack(side="left", padx=10)
-
-# Tombol tambah data
-def setup_floating_button(main_frame):
-    add_button = ctk.CTkButton(
-        main_frame,
-        text="+",
-        width=50,
-        height=50,
-        corner_radius=25,
-        fg_color="red",
-        font=("Arial", 24, "bold"),
-        hover_color="darkred",
-        command=lambda: create_popup(),
-    )
-    add_button.place(relx=0.88, rely=0.8, anchor="center")
-
-if __name__ == "__main__":
-    setup_app(ctk.CTk())
+    # Tombol untuk edit user
+    edit_button = ctk.CTkButton(table_frame, text="Edit User", command=edit_user)
+    edit_button.pack(side="left", padx=10, pady=10)
