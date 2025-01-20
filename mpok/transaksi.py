@@ -3,13 +3,14 @@ from tkinter import ttk, messagebox
 import os
 import datetime
 import pandas as pd
+from tkcalendar import DateEntry
 import mpok.dashboard as adminlogin
 import mpok.order as adminorder
 import mpok.stok as adminstok
 import mpok.user as adminuser
 
 def main(app):
-    global orders_data, table
+    global orders_data, table, date_entry
     for widget in app.winfo_children():
         widget.destroy()
 
@@ -36,7 +37,7 @@ def main(app):
     transaksi_button = ctk.CTkButton(sidebar_frame, text="Riwayat Transaksi", fg_color="green")
     transaksi_button.pack(pady=5, padx=10)
 
-    users_button = ctk.CTkButton(sidebar_frame, text="Users", command=lambda:adminuser.setup_app(app), fg_color="purple")
+    users_button = ctk.CTkButton(sidebar_frame, text="Users", command=lambda: adminuser.setup_app(app), fg_color="purple")
     users_button.pack(pady=5, padx=10)
 
     # create the right content frame
@@ -50,6 +51,28 @@ def main(app):
     # create the title
     title_label = ctk.CTkLabel(top_frame, text="Gudang Indiekost", font=("Arial", 18))
     title_label.pack(pady=10)
+
+    # Create the options frame for date picker and dropdown above the table
+    options_frame = ctk.CTkFrame(right_frame, corner_radius=0)
+    options_frame.pack(fill="x", side="top", pady=5, padx=10)
+
+    # Dropdown for transaction type
+    tipe_transaksi = ["Penjualan", "Pembelian"]
+    selected_transaction = ctk.StringVar(value="Penjualan")
+
+    def on_transaction_change(choice):
+        load_data(choice, date_entry.get_date().strftime("%Y-%m-%d"))
+
+    # Create Date Picker
+    date_picker_label = ctk.CTkLabel(options_frame, text="Pilih Tanggal:")
+    date_picker_label.pack(side="left", padx=5)
+
+    date_entry = DateEntry(options_frame, selectmode="day", date_pattern="yyyy-MM-dd")
+    date_entry.pack(side="left", padx=5)
+
+    # Dropdown menu for transaction type
+    export_button = ctk.CTkOptionMenu(options_frame, variable=selected_transaction, values=tipe_transaksi, command=on_transaction_change)
+    export_button.pack(side="right", padx=10)
 
     # create the table frame
     table_frame = ctk.CTkFrame(right_frame, corner_radius=0)
@@ -74,35 +97,20 @@ def main(app):
     table.column("Jumlah", width=100, anchor="center")
 
     # Function to load data from spreadsheet
-    def load_data(transaction_type):
+    def load_data(transaction_type, selected_date=None):
         table.delete(*table.get_children())  # Clear existing table data
-        today = datetime.datetime.now().strftime("%Y-%m-%d")
-        file_path = f"./report/{'sell' if transaction_type == 'Penjualan' else 'buy'}/{today}.xlsx"
+        selected_date = selected_date or datetime.datetime.now().strftime("%Y-%m-%d")
+        file_path = f"./report/{'sell' if transaction_type == 'Penjualan' else 'buy'}/{selected_date}.xlsx"
 
         if os.path.exists(file_path):
             df = pd.read_excel(file_path)
             for _, row in df.iterrows():
                 table.insert("", "end", values=(row["No"], row["Jam Pemesanan"], row["Barang Pesanan"], row["Jumlah"]))
-            #print(f"Data loaded from {file_path}") #debug print
         else:
-            messagebox.showinfo("Info", "Belum ada transaksi hari ini")
+            messagebox.showinfo("Info", f"Tidak ada transaksi pada {selected_date}")
 
-    # Create the bottom frame for options
-    bottom_frame = ctk.CTkFrame(right_frame, corner_radius=0)
-    bottom_frame.pack(fill="x", side="bottom", pady=10, padx=10)
-
-    # Dropdown for transaction type
-    tipe_transaksi = ["Penjualan", "Pembelian"]
-    selected_transaction = ctk.StringVar(value="Penjualan")
-
-    def on_transaction_change(choice):
-        load_data(choice)
-
-    export_button = ctk.CTkOptionMenu(bottom_frame, variable=selected_transaction, values=tipe_transaksi, command=on_transaction_change)
-    export_button.pack(side="right", padx=10)
-
-    # Load default data (Penjualan)
-    load_data("Penjualan")
+    # Load default data (Penjualan and today's date)
+    load_data("Penjualan", datetime.datetime.now().strftime("%Y-%m-%d"))
 
     # run the application
     app.mainloop()
